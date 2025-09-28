@@ -1,15 +1,192 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+// ENUMS
+enum UserType {
+  PHYSICAL
+  CORPORATION
+}
+
+enum PropertyType {
+  RESIDENTIAL
+  COMMERCIAL
+  INDUSTRIAL
+}
+
+enum SystemType {
+  MONOPHASIC
+  BIPHASIC
+  TRIPHASIC
+}
+
+// MODELS
+
+model User {
+  id                String             @id @default(uuid())
+  email             String             @unique
+  password          String
+  name              String
+  userType          UserType
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  
+  physicalPersonProfile   PhysicalPersonProfile?
+  corporationProfile      CorporationProfile?
+  distributors            EnergyDistributor[]
+  properties              Property[]
+  passwordResetTokens     PasswordResetToken[]
+}
+
+model PhysicalPersonProfile {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  birthDate   DateTime
+  zipCode     String
+  address     String
+  city        String
+  state       String
+  country     String
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CorporationProfile {
+  id           String @id @default(uuid())
+  userId       String @unique
+  fantasyName  String
+  cnpj         String @unique
+  zipCode      String
+  address      String
+  city         String
+  state        String
+  country      String
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model RevokedToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  revokedAt DateTime @default(now())
+}
+
+model EnergyDistributor {
+  id             String       @id @default(uuid())
+  name           String
+  cnpj           String?      @unique
+  systemType     SystemType
+  voltage        Float
+  kwhPrice       Float
+  userId         String
+  
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  properties Property[]
+}
+
+model Property {
+  id                String         @id @default(uuid())
+  name              String
+  type              PropertyType
+  zipCode           String
+  address           String
+  city              String
+  state             String
+  country           String
+  totalAreaSize     Float?
+  userId            String
+  distributorId     String
+  
+  user        User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  distributor EnergyDistributor   @relation(fields: [distributorId], references: [id])
+  areas       Area[]
+  alertRules  AlertRule[]
+}
+
+model Area {
+  id          String      @id @default(uuid())
+  name        String
+  areaSize    Float?
+  propertyId  String
+  
+  property   Property    @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  devices    Device[]
+  alertRules AlertRule[]
+}
+
+model Device {
+  id                  String               @id @default(uuid())
+  name                String
+  model               String?
+  brand               String?
+  voltage             Float
+  power               Float
+  areaId              String
+  
+  area                Area                 @relation(fields: [areaId], references: [id], onDelete: Cascade)
+  iotDevice           IoTDevice?
+  energyConsumptions  EnergyConsumption[]
+  alertRules          AlertRule[]
+}
+
+model IoTDevice {
+  id        String    @id @default(uuid())
+  apiKey    String    @unique @default(uuid())
+  status    String
+  deviceId  String    @unique
+  
+  device Device @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+}
+
+model EnergyConsumption {
+  id          String   @id @default(uuid())
+  consumption Float
+  timestamp   DateTime
+  deviceId    String
+  isManual    Boolean  @default(false)
+  
+  device Device @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+}
+
+model AlertRule {
+  id          String   @id @default(uuid())
+  name        String
+  threshold   Float
+  timeWindow  Int      // Janela de tempo em horas
+  isEnabled   Boolean  @default(true)
+
+  propertyId  String?
+  areaId      String?
+  deviceId    String?
+
+  // Relações claras e seguras
+  property      Property?       @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  area          Area?           @relation(fields: [areaId], references: [id], onDelete: Cascade)
+  device        Device?         @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  
+  notifications Notification[]
+}
+
+model Notification {
+  id           String    @id @default(uuid())
+  message      String
+  isRead       Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  alertRuleId  String
+  
+  alertRule AlertRule @relation(fields: [alertRuleId], references: [id], onDelete: Cascade)
 }
