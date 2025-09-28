@@ -26,3 +26,8 @@ type CorporationDTO = {
 }
 
 export type RegisterUserDTO = UserBaseDTO & (PhysicalPersonDTO | CorporationDTO)
+
+export type LoginUserDTO = {
+    email: string
+    password: string
+}

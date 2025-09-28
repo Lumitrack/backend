@@ -1,6 +1,7 @@
-import { hash } from "bcryptjs"
+import { compare, hash } from "bcryptjs"
+import jwt from "jsonwebtoken"
 import { prisma } from "../../lib/prisma.js"
-import type { RegisterUserDTO } from "./auth.types.js"
+import type { LoginUserDTO, RegisterUserDTO } from "./auth.types.js"
 
 export class AuthService {
     async register(data: RegisterUserDTO) {
@@ -60,4 +61,46 @@ export class AuthService {
         const { password, ...userWithoutPassword } = user
         return userWithoutPassword
     }
+
+    async login(data: LoginUserDTO) {
+        const user = await prisma.user.findUnique({
+            where: { email: data.email },
+        })
+
+        if (!user) {
+            throw new Error("Credenciais inválidas.")
+        }
+
+        const isPasswordValid = await compare(data.password, user.password)
+
+        if (!isPasswordValid) {
+            throw new Error("Credenciais inválidas.")
+        }
+
+        const jwtSecret = process.env.JWT_SECRET
+
+        if (!jwtSecret) {
+            throw new Error("Variável de ambiente JWT_SECRET não configurada.")
+        }
+
+        const token = jwt.sign(
+            {
+                // Payload: informações que queremos guardar no token
+                name: user.name,
+                email: user.email,
+            },
+            jwtSecret,
+            {
+                subject: user.id, // O "dono" do token, geralmente o ID do usuário
+                expiresIn: "1d", // O token expira em 1 dia
+            },
+        )
+
+        const { password, ...userWithoutPassword } = user
+        return {
+            user: userWithoutPassword,
+            token,
+        }
+    }
+
 }
