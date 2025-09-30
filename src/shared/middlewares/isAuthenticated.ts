@@ -32,7 +32,6 @@ export function isAuthenticated(req: Request, res: Response, next: NextFunction)
         try {
             const { sub } = jwt.verify(token!, jwtSecret) as TokenPayload
 
-            // @ts-ignore
             req.userId = sub
 
             return next()
