@@ -6,7 +6,7 @@ export class IoTService {
     async create(data: CreateIoTDeviceDTO, userId: string) {
 
         const { name, linkTargetType, targetId } = data
-        let iotDeviceData: { name: string; propertyId?: string; areaId?: string; deviceId?: string } = { name };
+        let createData: any = { name }
 
         switch (linkTargetType) {
         case "PROPERTY":
@@ -21,7 +21,7 @@ export class IoTService {
                 throw new Error("Propriedade não encontrada ou não pertence ao usuário.")
             } 
 
-            iotDeviceData.propertyId = property.id
+            createData.property = { connect: { id: property.id } }
             break
         case "AREA":
             const area = await prisma.area.findFirst({
@@ -35,7 +35,7 @@ export class IoTService {
                 throw new Error("Área não encontrada ou não pertence ao usuário.")
             }
 
-            iotDeviceData.areaId = area.id
+            createData.area = { connect: { id: area.id } }
             break
         case "DEVICE":
             const device = await prisma.device.findFirst({
@@ -49,13 +49,13 @@ export class IoTService {
                 throw new Error("Aparelho não encontrado ou não pertence ao usuário.")
             }
 
-            iotDeviceData.deviceId = device.id;
+            createData.device = { connect: { id: device.id } }
             break;
         default:
             throw new Error("Tipo de alvo inválido.")
         }
 
-        return prisma.ioTDevice.create({ data: iotDeviceData })
+        return prisma.ioTDevice.create({ data: createData });
     }
 
     async findAllByUser(userId: string) {
@@ -63,9 +63,9 @@ export class IoTService {
         return prisma.ioTDevice.findMany({
         where: {
             OR: [
-                { property: { userId } },
-                { area: { property: { userId } } },
-                { device: { area: { property: { userId } } } },
+                { property: { is: {userId} } },
+                { area: { is: { property: { is: { userId } } } } },
+                { device: { is: { area: { is: { property: { is: {userId} } } } } } },
             ],
         },
         include: {
@@ -78,8 +78,22 @@ export class IoTService {
 
     async findById(iotDeviceId: string, userId: string) {
 
-        const iotDevice = await this.findAllByUser(userId)
-        const device = iotDevice.find(d => d.id === iotDeviceId)
+        const device = await prisma.ioTDevice.findFirst({
+
+            where: {
+                id: iotDeviceId,
+                OR: [
+                    { property: { is: { userId } } },
+                    { area: { is: { property: { is: { userId } } } } },
+                    { device: { is: { area: { is: { property: { is: { userId } } } } } } },
+                ],
+            },
+            include: {
+                property: { select: { id: true, name: true } },
+                area: { select: { id: true, name: true } },
+                device: { select: { id: true, name: true } },
+            }
+        })
 
         if (!device) {
             throw new Error("Dispositivo IoT não encontrado ou não pertence ao usuário.")
