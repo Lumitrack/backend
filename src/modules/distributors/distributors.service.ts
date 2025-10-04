@@ -33,21 +33,16 @@ export class DistributorsService {
     }
 
     async update(id: string, data: UpdateDistributorDTO, userId: string) {
-
-        await this.findById(id, userId)
-
         return prisma.energyDistributor.update({
-            where: { id },
-        data,
+            where: { id, userId },
+            data
         })
     }
 
     async delete(id: string, userId: string) {
-
         await this.findById(id, userId)
-
         await prisma.energyDistributor.delete({
-            where: { id },
+            where: { id, userId },
         })
     }
 }
