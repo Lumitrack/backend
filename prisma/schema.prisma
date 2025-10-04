@@ -115,6 +115,8 @@ model Property {
   distributor EnergyDistributor   @relation(fields: [distributorId], references: [id])
   areas       Area[]
   alertRules  AlertRule[]
+  iotDevices IoTDevice[]
+  energyConsumptions EnergyConsumption[]
 }
 
 model Area {
@@ -126,6 +128,8 @@ model Area {
   property   Property    @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   devices    Device[]
   alertRules AlertRule[]
+  iotDevices IoTDevice[]
+  energyConsumptions EnergyConsumption[]
 }
 
 model Device {
@@ -144,36 +148,48 @@ model Device {
 }
 
 model IoTDevice {
-  id        String    @id @default(uuid())
-  apiKey    String    @unique @default(uuid())
-  status    String
-  deviceId  String    @unique
-  
-  device Device @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  id                  String    @id @default(uuid())
+  name                String
+  apiKey              String    @unique @default(uuid())
+  online              Boolean   @default(false)
+  lastConnectedAt     DateTime?
+  lastDisconnectedAt  DateTime?
+
+  propertyId  String?
+  areaId      String?
+  deviceId    String?    @unique
+
+  property    Property?   @relation(fields: [propertyId], references: [id], onDelete: SetNull )
+  area        Area?       @relation(fields: [areaId], references: [id], onDelete: SetNull)
+  device      Device?     @relation(fields: [deviceId], references: [id], onDelete: SetNull)
 }
 
 model EnergyConsumption {
   id          String   @id @default(uuid())
   consumption Float
   timestamp   DateTime
-  deviceId    String
   isManual    Boolean  @default(false)
-  
-  device Device @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+
+  propertyId  String?
+  areaId      String?
+  deviceId    String?
+
+  property    Property?   @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  area        Area?       @relation(fields: [areaId], references: [id], onDelete: Cascade)
+  device      Device?      @relation(fields: [deviceId], references: [id], onDelete: Cascade)
 }
 
 model AlertRule {
   id          String   @id @default(uuid())
   name        String
   threshold   Float
-  timeWindow  Int      // Janela de tempo em horas
+  timeWindow  Int
   isEnabled   Boolean  @default(true)
 
   propertyId  String?
   areaId      String?
   deviceId    String?
 
-  // Relações claras e seguras
   property      Property?       @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   area          Area?           @relation(fields: [areaId], references: [id], onDelete: Cascade)
   device        Device?         @relation(fields: [deviceId], references: [id], onDelete: Cascade)
