@@ -61,20 +61,37 @@ export class DevicesService {
     }
 
     async update(deviceId: string, data: UpdateDeviceDTO, userId: string) {
-
-        await this.findById(deviceId, userId) // Garante que o dispositivo pertence ao usuário
-
-        return prisma.device.update({
-            where: { id: deviceId },
-            data,
+        const result = await prisma.device.updateMany({
+            where: {
+                id: deviceId,
+                area: {
+                    property: {
+                        userId: userId,
+                    }
+                }
+            },
+            data
         })
+
+        if (result.count === 0) {
+            throw new Error("Dispositivo não encontrado ou não pertence ao usuário.")
+        }
     }
 
     async delete(deviceId: string, userId: string) {
-        await this.findById(deviceId, userId)
-
-        await prisma.device.delete({
-            where: { id: deviceId },
+        const result = await prisma.device.deleteMany({
+            where: {
+                id: deviceId,
+                area: {
+                    property: {
+                        userId: userId,
+                    }
+                }
+            }
         })
+
+        if (result.count === 0) {
+            throw new Error("Dispositivo não encontrado ou não pertence ao usuário.")
+        }
     }
 }

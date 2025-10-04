@@ -51,16 +51,12 @@ export class PropertiesService {
     }
 
     async update(id: string, data: UpdatePropertyDTO, userId: string) {
-
         await this.findById(id, userId)
 
         if (data.distributorId) {
             const distributorExists = await prisma.energyDistributor.findFirst({
-                where: {
-                    id: data.distributorId,
-                    userId,
-                },
-            })
+                where: { id: data.distributorId, userId }
+        })
 
             if (!distributorExists) {
                 throw new Error("Nova distribuidora não encontrada ou não pertence ao usuário.")
@@ -68,17 +64,15 @@ export class PropertiesService {
         }
 
         return prisma.property.update({
-            where: { id },
-            data,
+            where: { id, userId },
+            data
         })
     }
 
     async delete(id: string, userId: string) {
-
         await this.findById(id, userId)
-
         await prisma.property.delete({
-            where: { id },
+            where: { id, userId }
         })
     }
 }

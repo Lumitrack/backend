@@ -50,20 +50,33 @@ export class AreasService {
     }
 
     async update(areaId: string, data: UpdateAreaDTO, userId: string) {
-
-        await this.findById(areaId, userId)
-
-        return prisma.area.update({
-            where: { id: areaId },
+        const result = await prisma.area.updateMany({
+            where: {
+                id: areaId,
+                property: {
+                    userId: userId,
+                },
+            },
             data,
         })
+
+        if (result.count === 0) {
+            throw new Error("Área não encontrada ou não pertence ao usuário.")
+        }
     }
 
     async delete(areaId: string, userId: string) {
-        await this.findById(areaId, userId)
-
-        await prisma.area.delete({
-            where: { id: areaId },
+        const result = await prisma.area.deleteMany({
+            where: {
+                id: areaId,
+                property: {
+                    userId: userId,
+                },
+            },
         })
+
+        if (result.count === 0) {
+            throw new Error("Área não encontrada ou não pertence ao usuário.")
+        }
     }
 }
