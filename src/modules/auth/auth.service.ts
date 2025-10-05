@@ -103,4 +103,12 @@ export class AuthService {
         }
     }
 
+    async logout(token: string) {
+        await prisma.revokedToken.create({
+            data: {
+                token,
+            }
+        })
+    }
+
 }
