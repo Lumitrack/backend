@@ -7,8 +7,8 @@ export type GetHistoryOptions = {
     targetType: LinkTargetType
     targetId: string
     period: "daily" | "monthly" | "annual"
-    startDate?: string
-    endDate?: string
+    startDate?: string | undefined
+    endDate?: string | undefined
 }
 
 export class ConsumptionService {
