@@ -8,5 +8,6 @@ const consumptionController = new ConsumptionController()
 consumptionRouter.use(isAuthenticated)
 
 consumptionRouter.post("/manual", consumptionController.createManualLog)
+consumptionRouter.get('/history', consumptionController.getHistory)
 
 export { consumptionRouter }
