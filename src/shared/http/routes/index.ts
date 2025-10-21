@@ -7,6 +7,7 @@ import { iotInsertionRouter, iotRouter } from "modules/iot/iot.routes.js"
 import { consumptionRouter } from "modules/consumption/consumption.routes.js"
 import { alertsRouter } from "modules/alerts/alerts.routes.js"
 import { notificationsRouter } from "modules/notifications/notifications.routes.js"
+import { simulationsRouter } from "modules/simulations/simulation.routes.js"
 
 const mainRouter = Router()
 
@@ -19,5 +20,6 @@ mainRouter.use("/consumption", consumptionRouter)
 mainRouter.use("/iot", iotInsertionRouter)
 mainRouter.use("/alerts", alertsRouter)
 mainRouter.use("/notifications", notificationsRouter)
+mainRouter.use("/simulations", simulationsRouter)
 
 export { mainRouter }
