@@ -2,13 +2,17 @@
   <img src="/public/logo_lumitrack.svg" alt="Lumitrack Logo" width="120"/>
   <h1>Lumitrack - API Backend</h1>
   <p><strong>API RESTful para o sistema de monitoramento de energia Lumitrack.</strong></p>
+</div>
 
-![NodeJS](https://img.shields.io/badge/Node.js-5FA04E.svg?style=for-the-badge&logo=nodedotjs&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6.svg?style=for-the-badge&logo=TypeScript&logoColor=white)
-![Prisma](https://img.shields.io/badge/Prisma-2D3748.svg?style=for-the-badge&logo=Prisma&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1.svg?style=for-the-badge&logo=PostgreSQL&logoColor=white)
-![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellowgreen)
+<div align="center">
+  <img src="https://img.shields.io/badge/Node.js-5FA04E.svg?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="NodeJS"/>
+  <img src="https://img.shields.io/badge/TypeScript-3178C6.svg?style=for-the-badge&logo=TypeScript&logoColor=white" alt="TypeScript"/>
+  <img src="https://img.shields.io/badge/Prisma-2D3748.svg?style=for-the-badge&logo=Prisma&logoColor=white" alt="Prisma"/>
+  <img src="https://img.shields.io/badge/PostgreSQL-4169E1.svg?style=for-the-badge&logo=PostgreSQL&logoColor=white" alt="PostgreSQL"/>
+</div>
 
+<div align="center">
+  <img src="https://img.shields.io/badge/status-em%20desenvolvimento-yellowgreen" alt="Status"/>
 </div>
 
 ---
