@@ -1,17 +1,5 @@
-import { SystemType } from "@prisma/client"
+import type z from "zod"
+import type { createDistributorSchema, updateDistributorSchema } from "./distributors.schemas.js"
 
-export type CreateDistributorDTO = {
-    name: string
-    cnpj?: string // Opcional
-    systemType: SystemType // MONOPHASIC, BIPHASIC, TRIPHASIC
-    voltage: number
-    kwhPrice: number
-}
-
-export type UpdateDistributorDTO = {
-    name?: string
-    cnpj?: string
-    systemType?: SystemType
-    voltage?: number
-    kwhPrice?: number
-}
+export type CreateDistributorDTO = z.infer<typeof createDistributorSchema>
+export type UpdateDistributorDTO = z.infer<typeof updateDistributorSchema>
