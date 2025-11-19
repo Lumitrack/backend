@@ -1,20 +1,7 @@
-export enum AlertTargetType {
-    PROPERTY = "PROPERTY",
-    AREA = "AREA",
-    DEVICE = "DEVICE",
-}
+import { z } from "zod"
+import type { createAlertRuleSchema, updateAlertRuleSchema } from "./alerts.schemas.js"
 
-export type CreateAlertRuleDTO = {
-    name: string
-    threshold: number // Limite de consumo em kWh
-    timeWindow: number // Janela de tempo em horas (ex: 24 para diário, 720 para mensal)
-    targetType: AlertTargetType
-    targetId: string // ID da propriedade, área ou aparelho
-}
+export { linkTargetTypeEnum as AlertTargetType } from "../iot/iot.schemas.js"
 
-export type UpdateAlertRuleDTO = {
-    name?: string
-    threshold?: number
-    timeWindow?: number
-    isEnabled?: boolean
-}
+export type CreateAlertRuleDTO = z.infer<typeof createAlertRuleSchema>
+export type UpdateAlertRuleDTO = z.infer<typeof updateAlertRuleSchema>

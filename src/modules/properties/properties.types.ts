@@ -1,25 +1,6 @@
-import { PropertyType } from "@prisma/client"
+import { z } from "zod"
+import type { createPropertySchema, updatePropertySchema } from "./properties.schemas.js"
 
-export type CreatePropertyDTO = {
-    name: string
-    type: PropertyType // RESIDENTIAL, COMMERCIAL, ou INDUSTRIAL
-    zipCode: string
-    address: string
-    city: string
-    state: string
-    country: string
-    totalAreaSize?: number // Opcional
-    distributorId: string // ID da distribuidora a ser vinculada
-}
 
-export type UpdatePropertyDTO = {
-    name?: string
-    type?: PropertyType
-    zipCode?: string
-    address?: string
-    city?: string
-    state?: string
-    country?: string
-    totalAreaSize?: number
-    distributorId?: string
-}
+export type CreatePropertyDTO = z.infer<typeof createPropertySchema>
+export type UpdatePropertyDTO = z.infer<typeof updatePropertySchema>
