@@ -1,9 +1,5 @@
-export type CreateAreaDTO = {
-    name: string
-    areaSize?: number
-}
+import { z } from "zod"
+import type { createAreaSchema, updateAreaSchema } from "./areas.schemas.js"
 
-export type UpdateAreaDTO = {
-    name?: string
-    areaSize?: number
-}
+export type CreateAreaDTO = z.infer<typeof createAreaSchema>
+export type UpdateAreaDTO = z.infer<typeof updateAreaSchema>
