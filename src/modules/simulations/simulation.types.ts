@@ -1,11 +1,4 @@
-interface SimulatedDevice {
-    name: string
-    power: number // Potência em Watts
-    usageHoursPerDay: number // Horas de uso por dia
-}
+import { z } from "zod"
+import type { costSimulationSchema } from "./simulation.schemas.js"
 
-export type CostSimulationDTO = {
-    propertyId: string
-    period: "day" | "month" | "year"
-    devices: SimulatedDevice[]
-}
+export type CostSimulationDTO = z.infer<typeof costSimulationSchema>
