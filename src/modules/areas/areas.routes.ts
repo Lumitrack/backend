@@ -1,6 +1,6 @@
 import { Router } from "express"
 import { AreasController } from "./areas.controller.js"
-import { devicesRouter } from "modules/devices/device.routes.js"
+import { devicesRouter } from "modules/devices/devices.routes.js"
 import { validateRequest } from "shared/middlewares/validateRequest.js"
 import { createAreaSchema, updateAreaSchema } from "./areas.schemas.js"
 

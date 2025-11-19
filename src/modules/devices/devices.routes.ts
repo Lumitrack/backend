@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { DevicesController } from "./device.controller.js"
+import { DevicesController } from "./devices.controller.js"
 import { validateRequest } from "shared/middlewares/validateRequest.js"
 import { createDeviceSchema, updateDeviceSchema } from "./devices.schemas.js"
 
