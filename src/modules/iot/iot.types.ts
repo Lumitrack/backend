@@ -1,15 +1,6 @@
-export enum LinkTargetType {
-    PROPERTY = "PROPERTY",
-    AREA = "AREA",
-    DEVICE = "DEVICE",
-}
+import { z } from "zod"
+import type { createIoTDeviceSchema, linkTargetTypeEnum, updateIoTDeviceSchema } from "./iot.schemas.js"
 
-export type CreateIoTDeviceDTO = {
-    name: string
-    linkTargetType: LinkTargetType
-    targetId: string
-}
-
-export type UpdateIoTDeviceDTO = {
-    name?: string
-}
+export type LinkTargetType = z.infer<typeof linkTargetTypeEnum>
+export type CreateIoTDeviceDTO = z.infer<typeof createIoTDeviceSchema>
+export type UpdateIoTDeviceDTO = z.infer<typeof updateIoTDeviceSchema>
