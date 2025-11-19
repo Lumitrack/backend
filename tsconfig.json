@@ -2,7 +2,7 @@
   "compilerOptions": {
     // Caminhos e Diretórios
     "baseUrl": "./src",
-    "rootDir": "./src",
+    //"rootDir": "./src",
     "outDir": "./dist",
 
     // Configuração de Módulos (Node.js Moderno)
