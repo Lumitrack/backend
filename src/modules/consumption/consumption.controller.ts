@@ -18,11 +18,6 @@ export class ConsumptionController {
         const userId = req.userId
         const { targetType, targetId, period, startDate, endDate } = req.query
 
-        // Validação básica dos query params
-        if (!targetType || !targetId || !period) {
-            return res.status(400).json({ message: "Os parâmetros targetType, targetId e period são obrigatórios." })
-        }
-
         const options: GetHistoryOptions = {
             targetType: targetType as LinkTargetType,
             targetId: targetId as string,
