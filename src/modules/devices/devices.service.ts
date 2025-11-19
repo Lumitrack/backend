@@ -26,8 +26,12 @@ export class DevicesService {
 
         return prisma.device.create({
             data: {
-                ...data,
+                name: data.name,
+                voltage: data.voltage,
+                power: data.power,
                 areaId,
+                model: data.model ?? null,
+                brand: data.brand ?? null,
             },
         })
     }
@@ -61,6 +65,10 @@ export class DevicesService {
     }
 
     async update(deviceId: string, data: UpdateDeviceDTO, userId: string) {
+        const cleanData = Object.fromEntries(
+            Object.entries(data).filter(([_, value]) => value !== undefined)
+        );
+
         const result = await prisma.device.updateMany({
             where: {
                 id: deviceId,
@@ -70,7 +78,7 @@ export class DevicesService {
                     }
                 }
             },
-            data
+            data: cleanData
         })
 
         if (result.count === 0) {
