@@ -1,8 +1,4 @@
-import { LinkTargetType } from "../iot/iot.types.js"
+import type { z } from "zod"
+import type { createManualConsumptionSchema } from "./consumption.schemas.js"
 
-export type CreateManualConsumptionDTO = {
-    targetType: LinkTargetType // PROPERTY, AREA, ou DEVICE
-    targetId: string
-    consumption: number
-    timestamp: string
-}
+export type CreateManualConsumptionDTO = z.infer<typeof createManualConsumptionSchema>
